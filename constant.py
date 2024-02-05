@@ -1,0 +1,2 @@
+STATUS = 0
+SERVICE = 1
