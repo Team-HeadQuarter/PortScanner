@@ -8,8 +8,8 @@ def startScan(target):
 
 def setTarget(target):
     packetDes = IP(dst=target.ip)
-    packetDes /= TCP(dport=range(0, 65535), flags="S")
-
+    packetDes /= TCP(dport=range(0, 65536), flags="S")
+    
     return recScan(target, packetDes)
 
 
