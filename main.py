@@ -1,21 +1,22 @@
+__author__ = "TeamHeadQuarter (ymiwm0322@kakao.com)"
+__version__ = "1.90"
+__last_modification__ = "2024.02.13"
+
+
 import argparse
 import datetime
 import time
+import pyfiglet
 
 import targetclass
 import ipcheck
 import synscan
+import servicescan
+from constant import START_PORT, END_PORT
 
 
 def main():
     starttime = time.time()
-    print("""
-        ################################
-        #       Team HeadQuarter       #
-        ################################
-        """)
-    print(f"Start Port Scan\t{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}")
-
     address = str()
 
     # Get Option
@@ -28,12 +29,22 @@ def main():
 
     # IP Validation Check
     address = args.target
-    print("Target Address:\t", address)
     ip = ipcheck.check(address)
     if ip == "":
         print(parser.print_help())
         return -1
-    print("Target IP:\t", ip)
+    
+    ascii_banner = pyfiglet.figlet_format("Team HeadQuarter")
+    print(ascii_banner)
+    print('='*64)
+    print()
+    print("Port Scanner v1.90")
+    print(f"Start Port Scan\t{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}")
+    print()
+    print(f"Target Address:\t{address}")
+    print(f"Target IP:\t{ip}")
+    print(f"Port Range:\t{START_PORT}-{END_PORT}")
+    print()
 
     # Create Target Object
     target = targetclass.Target(ip)
@@ -41,16 +52,25 @@ def main():
     # Call Scan Functions
     # netbandscan
     # distscan
-    # synscan
+    # Start SYN Scan
     target = synscan.startScan(target)
-    # servicescan
+    # Start Service Scan
+    # target = servicescan.osScan(target)
+    target = servicescan.insertInfo(target)
 
-    target.printport('o')
+    target.status = dict(sorted(target.status.items()))
+    target.oport = dict(sorted(target.oport.items()))
+
+    print()
+    print('='*64)
+
+    target.printres('o')
     target.savefile()
 
     endtime = time.time()
     duration = endtime - starttime
-    print("Duration:\t", duration)
+    print('='*64)
+    print(f"Duration:\t{duration}")
 
 
 if __name__ == "__main__":

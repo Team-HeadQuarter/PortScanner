@@ -1,56 +1,53 @@
-from scapy.sendrecv import sr
-from scapy.layers.inet import IP, TCP
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+from scapy.layers.inet import IP, TCP, ICMP
+from scapy.sendrecv import AsyncSniffer
+import socket
+import tqdm
+import time
+
+from constant import START_PORT, END_PORT, SYN, RST, ACK
+from randdist import randomize
 
 
 def startScan(target):
-    return setTarget(target)
+    snf = AsyncSniffer(store=True, filter=f"ip src {target.ip}")
+    snf.start()
 
+    portlist = randomize(list(range(START_PORT, END_PORT+1)))
 
-def setTarget(target):
-    packetDes = IP(dst=target.ip)
-    packetDes /= TCP(dport=range(0, 65536), flags="S")
+    for port in tqdm.tqdm(portlist):
+        packet = IP(dst=target.ip) / TCP(dport=port, flags="S")
+        s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+        s.sendto(bytes(packet[TCP]), (target.ip, 0))
+        s.close()
+
+    time.sleep(1)
+    snf.stop()
+
+    target = parsePacket(target, snf.results)
     
-    return recScan(target, packetDes)
+    return target
 
 
-def recScan(target, packetDes):
-    answered, unanswered = sr(packetDes, timeout=1)
-
-    # filtering unanswered packet
-    for packetDes in unanswered:
-        target.status[packetDes.dport] = ["Filtered", None]
-
-    # recording answered packet
-    for (send, recv) in answered:
-
-        # catch ICMP error message
-        if recv.getlayer("ICMP"):
-
-            eType = recv.getlayer("ICMP").eType
-            eCode = recv.getlayer("ICMP").eCode
-
+def parsePacket(target, packets):
+    for packet in packets:
+        if packet.haslayer(ICMP):
+            eType = packet.getlayer("ICMP").eType
+            eCode = packet.getlayer("ICMP").eCode
             if eCode == 3 and eType == 3:
-                target.status[send.dport] = ["Closed", None]
+                target.status[packet[TCP].sport] = ["Closed", None]
             else:
-                target.status[send.dport] = ["Exception", "Got ICMP with eType " + str(eType) + " and eCode " + str(eCode)]
-
-        else:
-            flags = recv.getlayer("TCP").sprintf("%flags%")
-
-            # open port recv SYN/ACK
-            if flags == "SA":
-                target.status[send.dport] = ["Open", None]
-                target.oport[send.dport] = ["Open", None]
-
-                # send RST for half scan
-                # sr(IP(dst=target.ip)/TCP(dport=send.dport, flags="R"))
-
-            # close port recv RES
-            elif flags == "R" or flags == "RA":
-                target.status[send.dport] = ["Closed", None]
-
-            # catch something else
+                target.status[packet[TCP].sport] = ["Exception", "Got ICMP with eType " + str(eType) + " and eCode " + str(eCode)]
+        elif packet.haslayer(TCP):
+            tcpdata = packet[TCP]
+            if tcpdata.flags == (SYN | ACK):
+                target.status[tcpdata.sport] = ["Open", None]
+                target.oport[tcpdata.sport] = ["Open", None]
+            elif tcpdata.flags == RST or tcpdata.flags == (RST | ACK):
+                target.status[tcpdata.sport] = ["Closed", None]
             else:
-                target.status[send.dport] = ["Exception", "Got packets with flags " + str(flags)]
-
+                target.status[tcpdata.sport] = ["Exception", "Got packets with flags code" + str(tcpdata.flags)]
+    
     return target
