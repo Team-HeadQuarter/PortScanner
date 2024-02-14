@@ -1,10 +1,6 @@
 STATUS = 0
 SERVICE = 1
 
-ALL =   0b0001
-OPEN =  0b0010
-OS =    0b0100
-
 FIN = 0x01
 SYN = 0x02
 RST = 0x04
