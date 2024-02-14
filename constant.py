@@ -1,6 +1,10 @@
 STATUS = 0
 SERVICE = 1
 
+ALL =   0b0001
+OPEN =  0b0010
+OS =    0b0100
+
 FIN = 0x01
 SYN = 0x02
 RST = 0x04
@@ -10,7 +14,21 @@ URG = 0x20
 ECE = 0x40
 CWR = 0x80
 
-data = {
+fingerprint = {
+    "OS_info": {
+        "Linux/Unix": {
+            "TTL_range": {"min": 48, "max": 64},
+            "Window_size_range": {"min": 8192, "max": 65535}
+        },
+        "Windows": {
+            "TTL_range": {"min": 65, "max": 128},
+            "Window_size_range": {"min": 8193, "max": 65535}
+        }
+    }
+}
+
+
+db = {
     "ports": {
         "0": {
             "description": "Reserved",

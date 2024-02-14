@@ -21,7 +21,7 @@ def main():
     # Get Option
     parser = argparse.ArgumentParser(description="Service Port Scanner")
     parser.add_argument("target", metavar="127.0.0.1", type=str, help="Type Target IP Address.")
-    parser.add_argument("-p", "--port", type=str, default="1-65535", help="Port Range For Scan")
+    parser.add_argument("-p", "--port", type=str, metavar="1-65535" ,default="1-65535", help="Port Range For Scan")
     parser.add_argument("-s", "--service", action="store_true", help="Service Port Scan(Protocol)")
     parser.add_argument("-b", "--band", type=int, default=24, help="IP/Bitmask Bandwidth Scan")
     parser.add_argument("-d", "--dist", action="store_true", help="Distributed Server Scan")
@@ -41,8 +41,14 @@ def main():
     if args.port != "":
         portrange = args.port
         seport = portrange.split('-', 1)
-        target.start_port = int(seport[0])
-        target.end_port = int(seport[1])
+        try:
+            target.start_port = int(seport[0])
+            target.end_port = int(seport[1])
+        except Exception as e:
+            print(e)
+            print("Invalid arguments in port option.")
+            print("{0 <= (Start Port)}-{(End Port) <= 65535}")
+            return -1
     
     print()
     print('='*64)
@@ -69,22 +75,21 @@ def main():
     target = synscan.startScan(target)
 
     # Start Service Scan(-s option)
-    # target = servicescan.osScan(target)
-    target = servicescan.insertInfo(target)
-
-    # Sorting Port Info
-    target.status = dict(sorted(target.status.items()))
-    target.oport = dict(sorted(target.oport.items()))
+    if args.service:
+        # Add Port Information
+        target = servicescan.insertInfo(target)
+        # OS Detection (Linux / Windows)
+        target = servicescan.fgprt(target)
 
     print()
     print('='*64)
 
-    target.printres('o')
+    target.printres()
     target.savefile()
 
+    print('='*64)
     endtime = time.time()
     duration = endtime - starttime
-    print('='*64)
     print(f"Duration:\t{duration}")
 
 
