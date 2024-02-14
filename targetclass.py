@@ -6,11 +6,13 @@ from constant import STATUS, SERVICE
 class Target:
     def __init__(self, ip: str):
         self.ip = ip
-        self.os = ""
         self.status = dict()
         self.oport = dict()
         self.ttl = int
         self.window = int
+        self.os = ""
+        self.start_port = 1
+        self.end_port = 65535
 
 
     def printres(self, opt):

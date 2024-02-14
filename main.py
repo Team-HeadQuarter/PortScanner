@@ -12,7 +12,6 @@ import targetclass
 import ipcheck
 import synscan
 import servicescan
-from constant import START_PORT, END_PORT
 
 
 def main():
@@ -22,6 +21,7 @@ def main():
     # Get Option
     parser = argparse.ArgumentParser(description="Service Port Scanner")
     parser.add_argument("target", metavar="127.0.0.1", type=str, help="Type Target IP Address.")
+    parser.add_argument("-p", "--port", type=str, default="1-65535", help="Port Range For Scan")
     parser.add_argument("-s", "--service", action="store_true", help="Service Port Scan(Protocol)")
     parser.add_argument("-b", "--band", type=int, default=24, help="IP/Bitmask Bandwidth Scan")
     parser.add_argument("-d", "--dist", action="store_true", help="Distributed Server Scan")
@@ -34,6 +34,19 @@ def main():
         print(parser.print_help())
         return -1
     
+    # Create Target Object
+    target = targetclass.Target(ip)
+
+    # Set Port Range(-p option)
+    if args.port != "":
+        portrange = args.port
+        seport = portrange.split('-', 1)
+        target.start_port = int(seport[0])
+        target.end_port = int(seport[1])
+    
+    print()
+    print('='*64)
+    print()
     ascii_banner = pyfiglet.figlet_format("Team HeadQuarter")
     print(ascii_banner)
     print('='*64)
@@ -43,21 +56,23 @@ def main():
     print()
     print(f"Target Address:\t{address}")
     print(f"Target IP:\t{ip}")
-    print(f"Port Range:\t{START_PORT}-{END_PORT}")
+    print(f"Port Range:\t{target.start_port}-{target.end_port}")
     print()
-
-    # Create Target Object
-    target = targetclass.Target(ip)
     
     # Call Scan Functions
+    
     # netbandscan
+
     # distscan
-    # Start SYN Scan
+    
+    # Start SYN Scan(default)
     target = synscan.startScan(target)
-    # Start Service Scan
+
+    # Start Service Scan(-s option)
     # target = servicescan.osScan(target)
     target = servicescan.insertInfo(target)
 
+    # Sorting Port Info
     target.status = dict(sorted(target.status.items()))
     target.oport = dict(sorted(target.oport.items()))
 

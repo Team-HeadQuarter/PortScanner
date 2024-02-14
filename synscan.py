@@ -7,7 +7,7 @@ import socket
 import tqdm
 import time
 
-from constant import START_PORT, END_PORT, SYN, RST, ACK
+from constant import SYN, RST, ACK
 from randdist import randomize
 
 
@@ -15,7 +15,7 @@ def startScan(target):
     snf = AsyncSniffer(store=True, filter=f"ip src {target.ip}")
     snf.start()
 
-    portlist = randomize(list(range(START_PORT, END_PORT+1)))
+    portlist = randomize(list(range(target.start_port, target.end_port+1)))
 
     for port in tqdm.tqdm(portlist):
         packet = IP(dst=target.ip) / TCP(dport=port, flags="S")

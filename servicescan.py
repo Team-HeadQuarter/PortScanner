@@ -1,8 +1,7 @@
-from constant import SERVICE
-from portservicelist import data
+from constant import SERVICE, data
 
 
-# OS 판별
+# OS Detection
 def osScan(target):
     pass
 
@@ -17,7 +16,7 @@ def insertInfo(target):
         if isinstance(ports[port_strnum], dict):
             description = ports[port_strnum]["description"]
         elif isinstance(ports[port_strnum], list):
-            # 원소가 여러개 있는 경우 제일 첫번째 설명을 입력 - 보완 방법 찾기
+            # If there is list at description(multiple items exist), take first one.
             description = ports[port_strnum][0]["description"]
 
         target.status[port_number][SERVICE] = description
@@ -26,6 +25,6 @@ def insertInfo(target):
     return target
 
 
-# 서비스 판별법 - nmap의 DB의 fingerprint로 유사도 비교 후 출력
+# Scanning by using OS Fingerprint DB
 def activeScan(target):
     pass
