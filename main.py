@@ -6,8 +6,8 @@ __last_modification__ = "2024.02.15"
 import argparse
 import time
 
-import targetclass
-import ipcheck
+from targetclass import Target
+from ipcheck import ipcheck
 import synscan
 import servicescan
 import netband
@@ -30,13 +30,13 @@ def main():
 
     # IP Validation Check
     address = args.target
-    ip = ipcheck.check(address)
+    ip = ipcheck(address)
     if ip == "":
         print(parser.print_help())
         return -1
     
     # Create Target Object
-    target = targetclass.Target(ip)
+    target = Target(ip)
 
     # Set Port Range(-p option)
     if args.port:
@@ -46,11 +46,13 @@ def main():
             target.start_port = int(seport[0])
             target.end_port = int(seport[1])
             if target.start_port > target.end_port:
+                print(parser.print_help())
                 print("Start port number must be smaller than end port number.")
                 return -1
         except Exception as e:
+            print(parser.print_help())
             print(e)
-            print("Invalid arguments in port option.")
+            print("Invalid arguments in -p option.")
             print("{0 <= (Start Port)}-{(End Port) <= 65535}")
             return -1
     
@@ -65,7 +67,7 @@ def main():
         if args.band in BITMASK:
             # Start netbandscan
             for sub_ip in netband.getiplist(target.ip, args.band):
-                subtarget = targetclass.Target(sub_ip)
+                subtarget = Target(sub_ip)
                 subtarget.start_port = target.start_port
                 subtarget.end_port = target.end_port
                 subtarget = synscan.startScan(subtarget)
@@ -78,7 +80,7 @@ def main():
 
                 printtarget(subtarget)
         else:
-            print("-b argument is out of bitmask range.")
+            print("-b argument is out of bitmask range.(8-32)")
             return -1
 
     else:
