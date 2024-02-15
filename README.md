@@ -64,10 +64,10 @@ When performing port scans, always act ethically, responsibly, and in compliance
 6. To do service scan, use -s(--service) option  
 (ex) `sudo python main.py -s {Target IP or Domain Name}`
 
-More information would be provide with write  
+More information would be provide by write command  
 `sudo python main.py -h` or `sudo python main.py --help`
 
-
+[Check demo images](https://github.com/Team-HeadQuarter/PortScanner/tree/main/img)
 
 ---
 
