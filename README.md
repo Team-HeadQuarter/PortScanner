@@ -69,7 +69,7 @@ When performing port scans, always act ethically, responsibly, and in compliance
 More information would be provide by write command  
 `sudo python main.py -h` or `sudo python main.py --help`
 
-[Check demo images](https://github.com/Team-HeadQuarter/PortScanner/tree/main/img)
+[Check demo images](https://github.com/Team-HeadQuarter/PortScanner/tree/main/img/demo)
 
 ---
 
