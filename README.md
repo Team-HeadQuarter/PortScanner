@@ -65,6 +65,9 @@ When performing port scans, always act ethically, responsibly, and in compliance
 (ex) `sudo python main.py -p 1-6666 {Target IP or Domain Name}`
 7. To do service scan, use -s(--service) option  
 (ex) `sudo python main.py -s {Target IP or Domain Name}`
+8. To do network band scan, use -b(--band) option  
+(ex) `sudo python main.py -b 24 {Target IP or Domain Name}`
+(Caution! If target is cloud infra, you could scan unexpected target in physical subnet. I recommend not to try on cloud infra.)
 
 More information would be provide by write command  
 `sudo python main.py -h` or `sudo python main.py --help`
