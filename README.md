@@ -77,6 +77,7 @@ More information would be provide with write
 - Run in Windows OS(OS is block to send with raw socket)
 - Generate packet without `scapy`
 - Sniff without `scapy`
+- Add scan speed option
 
 ---
 [_Go to top_ ↑](#portscannerv20)
