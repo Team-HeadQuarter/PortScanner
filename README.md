@@ -59,7 +59,8 @@ When performing port scans, always act ethically, responsibly, and in compliance
     - Port range: 1-65535
     - Service scan: Not Set
     - OS Detection: Not Set
-5. Result will shown in terminal, and also two files are saved in the directory named result_{Target_ip}.json and open_{Target_ip}.json
+5. Result will shown in terminal, and also two files are saved in the directory named  
+`result_{Target_ip}.json` and `open_{Target_ip}.json`
 6. To scan specific port range, use -p(--port) option  
 (ex) `sudo python main.py -p 1-6666 {Target IP or Domain Name}`
 7. To do service scan, use -s(--service) option  
