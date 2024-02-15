@@ -1,5 +1,5 @@
 __author__ = "TeamHeadQuarter (ymiwm0322@kakao.com)"
-__version__ = "2.00"
+__version__ = "3.00"
 __last_modification__ = "2024.02.15"
 
 
