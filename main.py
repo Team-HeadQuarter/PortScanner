@@ -1,6 +1,6 @@
 __author__ = "TeamHeadQuarter (ymiwm0322@kakao.com)"
-__version__ = "1.90"
-__last_modification__ = "2024.02.13"
+__version__ = "2.00"
+__last_modification__ = "2024.02.15"
 
 
 import argparse
@@ -57,7 +57,7 @@ def main():
     print(ascii_banner)
     print('='*64)
     print()
-    print("Port Scanner v1.90")
+    print("Port Scanner v2.00")
     print(f"Start Port Scan\t{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}")
     print()
     print(f"Target Address:\t{address}")
