@@ -27,8 +27,8 @@ def startScan(target):
     snf.stop()
 
     target = parsePacket(target, snf.results)
-    target = organizeTarget(target)
     target = fillFiltered(target)
+    target = organizeTarget(target)
     
     return target
 
@@ -59,6 +59,14 @@ def parsePacket(target, packets):
     return target
 
 
+def fillFiltered(target):
+    for port in range(target.start_port, target.end_port+1):
+        if port not in target.status.keys():
+            target.status[port] = ["Filtered", None]
+
+    return target
+
+
 def organizeTarget(target):
     if target.oport:
         # Set avg value in ttl, window
@@ -67,13 +75,5 @@ def organizeTarget(target):
         target.oport = dict(sorted(target.oport.items()))
 
     target.status = dict(sorted(target.status.items()))
-
-    return target
-
-
-def fillFiltered(target):
-    for port in range(target.start_port, target.end_port+1):
-        if port not in target.status.keys():
-            target.status[port] = ["Filtered", None]
 
     return target
