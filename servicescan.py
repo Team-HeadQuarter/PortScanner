@@ -1,9 +1,9 @@
-from constant import SERVICE, db, fingerprint
+from constant import SERVICE, DB, FINGERPRINT
 
 
 # Insert Service Info
 def insertInfo(target):
-    ports = db["ports"]
+    ports = DB["ports"]
 
     for port_number in target.oport.keys():
         description = ""
@@ -24,7 +24,7 @@ def insertInfo(target):
 # OS Fingerprinting
 # Could be more precise with quality information
 def fgprt(target):
-    os_info = fingerprint["OS_info"]
+    os_info = FINGERPRINT["OS_info"]
     unix_info = os_info["Linux/Unix"]
     win_info = os_info["Windows"]
     if target.ttl < unix_info["TTL_range"]["max"] and target.window < unix_info["Window_size_range"]["max"]:

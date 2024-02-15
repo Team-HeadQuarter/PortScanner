@@ -10,7 +10,7 @@ URG = 0x20
 ECE = 0x40
 CWR = 0x80
 
-fingerprint = {
+FINGERPRINT = {
     "OS_info": {
         "Linux/Unix": {
             "TTL_range": {"min": 48, "max": 64},
@@ -24,7 +24,7 @@ fingerprint = {
 }
 
 
-db = {
+DB = {
     "ports": {
         "0": {
             "description": "Reserved",
