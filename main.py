@@ -70,6 +70,7 @@ def main():
                 subtarget = Target(sub_ip)
                 subtarget.start_port = target.start_port
                 subtarget.end_port = target.end_port
+                print(f"Target IP: {subtarget.ip}")
                 subtarget = synscan.startScan(subtarget)
                 # Start Service Scan(-s option)
                 if args.service:
