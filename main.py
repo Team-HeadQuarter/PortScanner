@@ -4,8 +4,8 @@ __last_modification__ = "2024.02.13"
 
 
 import argparse
-import datetime
 import time
+import datetime
 import pyfiglet
 
 import targetclass
@@ -21,7 +21,7 @@ def main():
     # Get Option
     parser = argparse.ArgumentParser(description="Service Port Scanner")
     parser.add_argument("target", metavar="127.0.0.1", type=str, help="Type Target IP Address.")
-    parser.add_argument("-p", "--port", type=str, metavar="1-65535" ,default="1-65535", help="Port Range For Scan")
+    parser.add_argument("-p", "--port", type=str ,default="1-65535", help="Port Range For Scan")
     parser.add_argument("-s", "--service", action="store_true", help="Service Port Scan(Protocol)")
     parser.add_argument("-b", "--band", type=int, default=24, help="IP/Bitmask Bandwidth Scan")
     parser.add_argument("-d", "--dist", action="store_true", help="Distributed Server Scan")
