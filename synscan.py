@@ -46,6 +46,7 @@ def parsePacket(target, packets):
             ipdata = packet[IP]
             tcpdata = packet[TCP]
             if tcpdata.flags == (SYN | ACK):
+                # RST Packet should be send to target. Fortunately, OS is handle the things.
                 target.status[tcpdata.sport] = ["Open", None]
                 target.oport[tcpdata.sport] = ["Open", None]
                 target.ttl += ipdata.ttl
