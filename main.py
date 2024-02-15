@@ -5,13 +5,14 @@ __last_modification__ = "2024.02.15"
 
 import argparse
 import time
-import datetime
-import pyfiglet
 
 import targetclass
 import ipcheck
 import synscan
 import servicescan
+import netband
+from constant import BITMASK
+from printer import printintro, printtarget
 
 
 def main():
@@ -21,9 +22,9 @@ def main():
     # Get Option
     parser = argparse.ArgumentParser(description="Service Port Scanner")
     parser.add_argument("target", metavar="127.0.0.1", type=str, help="Type Target IP Address.")
-    parser.add_argument("-p", "--port", type=str ,default="1-65535", help="Port Range For Scan")
+    parser.add_argument("-p", "--port", type=str, help="Port Range For Scan")
     parser.add_argument("-s", "--service", action="store_true", help="Service Port Scan(Protocol)")
-    parser.add_argument("-b", "--band", type=int, default=24, help="IP/Bitmask Bandwidth Scan")
+    parser.add_argument("-b", "--band", type=int, help="IP/Bitmask Bandwidth Scan")
     parser.add_argument("-d", "--dist", action="store_true", help="Distributed Server Scan")
     args = parser.parse_args()
 
@@ -38,56 +39,61 @@ def main():
     target = targetclass.Target(ip)
 
     # Set Port Range(-p option)
-    if args.port != "":
+    if args.port:
         portrange = args.port
         seport = portrange.split('-', 1)
         try:
             target.start_port = int(seport[0])
             target.end_port = int(seport[1])
+            if target.start_port > target.end_port:
+                print("Start port number must be smaller than end port number.")
+                return -1
         except Exception as e:
             print(e)
             print("Invalid arguments in port option.")
             print("{0 <= (Start Port)}-{(End Port) <= 65535}")
             return -1
     
-    print()
-    print('='*64)
-    print()
-    ascii_banner = pyfiglet.figlet_format("Team HeadQuarter")
-    print(ascii_banner)
-    print('='*64)
-    print()
-    print("Port Scanner v2.00")
-    print(f"Start Port Scan\t{datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')}")
-    print()
-    print(f"Target Address:\t{address}")
-    print(f"Target IP:\t{ip}")
-    print(f"Port Range:\t{target.start_port}-{target.end_port}")
-    print()
-    
+    printintro(target, ip, address)
+
     # Call Scan Functions
     
-    # netbandscan
+    # Start distscan
 
-    # distscan
+    # Check band option
+    if args.band:
+        if args.band in BITMASK:
+            # Start netbandscan
+            for sub_ip in netband.getiplist(target.ip, args.band):
+                subtarget = targetclass.Target(sub_ip)
+                subtarget.start_port = target.start_port
+                subtarget.end_port = target.end_port
+                subtarget = synscan.startScan(subtarget)
+                # Start Service Scan(-s option)
+                if args.service:
+                    # Add Port Information
+                    subtarget = servicescan.insertInfo(subtarget)
+                    # OS Detection (Linux / Windows)
+                    subtarget = servicescan.fgprt(subtarget)
+
+                printtarget(subtarget)
+        else:
+            print("-b argument is out of bitmask range.")
+            return -1
+
+    else:
+        # Start SYN Scan(default)
+        target = synscan.startScan(target)
+
+        # Start Service Scan(-s option)
+        if args.service:
+            # Add Port Information
+            target = servicescan.insertInfo(target)
+            # OS Detection (Linux / Windows)
+            target = servicescan.fgprt(target)
+
+        printtarget(target)
     
-    # Start SYN Scan(default)
-    target = synscan.startScan(target)
-
-    # Start Service Scan(-s option)
-    if args.service:
-        # Add Port Information
-        target = servicescan.insertInfo(target)
-        # OS Detection (Linux / Windows)
-        target = servicescan.fgprt(target)
-
-    print()
-    print('='*64)
-
-    target.printres()
-    target.savefile()
-
-    print('='*64)
     endtime = time.time()
     duration = endtime - starttime
     print(f"Duration:\t{duration}")

@@ -1,5 +1,6 @@
 STATUS = 0
 SERVICE = 1
+BITMASK = list(range(8, 33))
 
 FIN = 0x01
 SYN = 0x02
