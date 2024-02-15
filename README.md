@@ -43,7 +43,7 @@ When performing port scans, always act ethically, responsibly, and in compliance
 
 1. OS: Linux(Unix), Mac OS X  
 2. Language: Python
-3. Modules: [require](https://github.com/Team-HeadQuarter/PortScanner/blob/main/require)
+3. Modules: [requirements](https://github.com/Team-HeadQuarter/PortScanner/blob/main/requirements)
 
 ---
 
